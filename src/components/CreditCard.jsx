@@ -1,4 +1,4 @@
-// src/components/CreditCard.jsx
+import { Link } from 'react-router-dom';
 
 export default function CreditCard({ credit }) {
     // Formatear números con separadores de miles
@@ -28,11 +28,33 @@ export default function CreditCard({ credit }) {
                 {credit.description}
             </p>
 
-            <div style={{ fontSize: '0.95rem', color: '#444' }}>
+            <div style={{ fontSize: '0.95rem', color: '#444', marginBottom: '16px' }}>
                 <div><strong>Tasa de interés:</strong> {credit.interestRate}% mensual</div>
                 <div><strong>Monto:</strong> {formatCurrency(credit.minAmount)} – {formatCurrency(credit.maxAmount)}</div>
                 <div><strong>Plazo máximo:</strong> {credit.maxTerm} meses</div>
             </div>
+
+            {/* Botón "Solicitar" */}
+            <Link
+                to={`/solicitud?credit=${encodeURIComponent(credit.name)}`}
+                style={{
+                    display: 'inline-block',
+                    width: '100%',
+                    padding: '10px',
+                    textAlign: 'center',
+                    backgroundColor: '#1e293b',
+                    color: 'white',
+                    textDecoration: 'none',
+                    borderRadius: '6px',
+                    fontSize: '0.95rem',
+                    fontWeight: '600',
+                    transition: 'background-color 0.2s'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#0f172a'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = '#1e293b'}
+            >
+                Solicitar
+            </Link>
         </div>
     );
 }
