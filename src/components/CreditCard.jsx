@@ -1,32 +1,38 @@
-import React from "react";
+// src/components/CreditCard.jsx
 
-// props
-export const CreditCard = ({ credit }) => {
-
-    const{
-        name,
-        desciption,
-        minAmount,
-        maxAmount,
-        interestRate,
-        maxTerm,
-        requeriments,
-        icon,
-    } = credit;
+export default function CreditCard({ credit }) {
+    // Formatear números con separadores de miles
+    const formatCurrency = (value) => {
+        return new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(value);
+    };
 
     return (
-        <div className='credit-card'>
-            <div className='card-header'>
-                <span className='icon'>{icon}</span>
-                <h4>{name}</h4>
-            </div>
+        <div style={{
+            border: '1px solid #e0e0e0',
+            borderRadius: '10px',
+            padding: '20px',
+            margin: '12px',
+            width: '320px',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+            backgroundColor: '#ffffff'
+        }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '1.25rem', color: '#333' }}>
+                {credit.name}
+            </h3>
+            <p style={{ color: '#555', fontSize: '0.95rem', margin: '0 0 16px 0' }}>
+                {credit.description}
+            </p>
 
-            <p className='description'>{desciption}</p>
-            <p className='details'> </p>
-
-            <div className='detail-item'>
-                <span>className='label</span>
+            <div style={{ fontSize: '0.95rem', color: '#444' }}>
+                <div><strong>Tasa de interés:</strong> {credit.interestRate}% mensual</div>
+                <div><strong>Monto:</strong> {formatCurrency(credit.minAmount)} – {formatCurrency(credit.maxAmount)}</div>
+                <div><strong>Plazo máximo:</strong> {credit.maxTerm} meses</div>
             </div>
         </div>
-    )
-};
+    );
+}
