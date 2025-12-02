@@ -40,44 +40,19 @@ export default function HomePage() {
             </div>
 
             {/* Sección de créditos destacados */}
-            <div style={{ padding: '40px 20px' }}>
-                <h2 style={{
-                    textAlign: 'center',
-                    marginBottom: '32px',
-                    color: '#1e293b',
-                    fontSize: '1.5rem'
-                }}>
-                    Productos Destacados
-                </h2>
+            <div className="container mt-4">
+                <h2 className="text-center mb-4 fw-bold text-dark">Productos Destacados</h2>
 
-                <div style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'center',
-                    gap: '20px',
-                    marginBottom: '32px'
-                }}>
+                <div className="row g-4 justify-content-center">
                     {destacados.map(credit => (
                         <CreditCard key={credit.id} credit={credit} />
                     ))}
                 </div>
 
-                <div style={{ textAlign: 'center' }}>
+                <div className="text-center mt-5">
                     <Link
                         to="/simulador"
-                        style={{
-                            display: 'inline-block',
-                            padding: '12px 32px',
-                            backgroundColor: '#1e293b',
-                            color: 'white',
-                            textDecoration: 'none',
-                            borderRadius: '8px',
-                            fontSize: '1rem',
-                            fontWeight: '600',
-                            transition: 'background-color 0.2s'
-                        }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = '#0f172a'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = '#1e293b'}
+                        className="btn btn-outline-dark px-4 py-2 fw-semibold"
                     >
                         Ver todos los créditos
                     </Link>

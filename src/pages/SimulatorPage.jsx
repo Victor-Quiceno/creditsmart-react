@@ -177,19 +177,11 @@ export default function SimulatorPage() {
                     </div>
                 </div>
             </div>
-
-            {/* Resultados: tarjetas o mensaje de "no hay resultados" */}
+            {/* Resultados */}
             {filteredCredits.length === 0 ? (
-                <p style={{ textAlign: 'center', color: '#64748b', fontSize: '1.1rem' }}>
-                    No hay créditos disponibles con esos criterios.
-                </p>
+                <p className="text-center text-muted mt-4">No hay créditos disponibles con esos criterios.</p>
             ) : (
-                <div style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',        // Asegura que sea responsive
-                    justifyContent: 'center',
-                    gap: '20px'
-                }}>
+                <div className="row g-4 mt-2">
                     {filteredCredits.map(credit => (
                         <CreditCard key={credit.id} credit={credit} />
                     ))}

@@ -1,27 +1,27 @@
-import { Routes, Route } from 'react-router-dom';
+import { Link, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import SimulatorPage from './pages/SimulatorPage';
 import ApplicationPage from './pages/ApplicationPage';
 
-// Crear el componente
 function App() {
   return (
-    <div className="App">
+    <div className="d-flex flex-column min-vh-100">
       {/* Navbar */}
-      <nav style={{
-        padding: '16px',
-        backgroundColor: '#f8f9fa',
-        borderBottom: '1px solid #e0e0e0',
-        display: 'flex',
-        gap: '20px'
-      }}>
-        <a href="/">Inicio</a>
-        <a href="/simulador">Simular Crédito</a>
-        <a href="/solicitud">Solicitar Crédito</a>
+      <nav className="navbar navbar-dark bg-dark">
+        <div className="container-fluid d-flex justify-content-between align-items-center">
+          <Link className="navbar-brand fs-4 fw-bold text-white" to="/">
+            CreditSmart
+          </Link>
+          <div className="d-none d-md-flex gap-3">
+            <Link className="nav-link text-light" to="/">Inicio</Link>
+            <Link className="nav-link text-light" to="/simulador">Simular Crédito</Link>
+            <Link className="nav-link text-light" to="/solicitud">Solicitar Crédito</Link>
+          </div>
+        </div>
       </nav>
 
-      {/* Contenido principal según la página */}
-      <main style={{ padding: '24px' }}>
+      {/* Contenido principal */}
+      <main className="flex-grow-1 py-4 bg-white">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/simulador" element={<SimulatorPage />} />
@@ -30,14 +30,13 @@ function App() {
       </main>
 
       {/* Footer  */}
-      <footer style={{
-        padding: '16px',
-        textAlign: 'center',
-        borderTop: '1px solid #e0e0e0',
-        color: '#666',
-        marginTop: '40px'
-      }}>
-        © 2025 CreditSmart. Todos los derechos reservados.
+      <footer className="bg-dark text-light py-4 mt-auto">
+        <div className="container text-center">
+          <p className="mb-0">© 2025 CreditSmart. Todos los derechos reservados.</p>
+          <p className="mb-0" style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
+            Plataforma de gestión crediticia
+          </p>
+        </div>
       </footer>
     </div>
   );
