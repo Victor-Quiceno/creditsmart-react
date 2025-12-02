@@ -1,7 +1,6 @@
 # CreditSmart
 
 **Estudiante**: Víctor Manuel Quiceno Guerra  
-**Curso**: Ingeniería Web I
 
 ## Descripción
 Plataforma interactiva para la gestión de productos crediticios, que permite:
