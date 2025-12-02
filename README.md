@@ -7,6 +7,7 @@ Plataforma interactiva para la gestión de productos crediticios, que permite:
 - Explorar créditos
 - Simular y filtrar créditos por nombre, monto y tasa
 - Solicitar créditos mediante un formulario
+- Guardar las solicitudes en un array en memoria que se puede ver desde la consola del navegador (F12)
 
 ## Tecnologías utilizadas
 - React (con Vite)

@@ -38,6 +38,8 @@ export default function ApplicationPage() {
         term: ''
     });
 
+    const [solicitudes, setSolicitudes] = useState([]);
+
     const [showSummary, setShowSummary] = useState(false);
     const [success, setSuccess] = useState(false);
 
@@ -72,6 +74,20 @@ export default function ApplicationPage() {
     };
 
     const handleConfirm = () => {
+
+        const nuevaSolicitud = {
+            id: Date.now(),
+            ...formData,
+            monthlyPayment,
+            fecha: new Date().toLocaleString()
+        };
+
+        setSolicitudes(prev => [...prev, nuevaSolicitud]);
+
+        console.log('Solicitudes', [...solicitudes, nuevaSolicitud]);
+
+        setSuccess(true);
+
         console.log('Solicitud enviada:', { ...formData, monthlyPayment });
         setSuccess(true);
         setTimeout(() => {
