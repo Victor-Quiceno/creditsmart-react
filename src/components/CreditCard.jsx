@@ -1,7 +1,6 @@
-// src/components/CreditCard.jsx
+import { Link } from 'react-router-dom';
 
 export default function CreditCard({ credit }) {
-    // Formatear números con separadores de miles
     const formatCurrency = (value) => {
         return new Intl.NumberFormat('es-CO', {
             style: 'currency',
@@ -12,26 +11,34 @@ export default function CreditCard({ credit }) {
     };
 
     return (
-        <div style={{
-            border: '1px solid #e0e0e0',
-            borderRadius: '10px',
-            padding: '20px',
-            margin: '12px',
-            width: '320px',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
-            backgroundColor: '#ffffff'
-        }}>
-            <h3 style={{ margin: '0 0 12px 0', fontSize: '1.25rem', color: '#333' }}>
-                {credit.name}
-            </h3>
-            <p style={{ color: '#555', fontSize: '0.95rem', margin: '0 0 16px 0' }}>
-                {credit.description}
-            </p>
+        <div className="col-12 col-sm-6 col-md-5 col-lg-4 d-flex">
+            <div
+                className="card border-0 shadow-sm h-100"
+                style={{
+                    borderRadius: '12px',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    backgroundColor: '#e1e1e1ff',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'none'}
+            >
+                <div className="card-body d-flex flex-column">
+                    <h5 className="card-title fw-bold text-dark mb-2">{credit.name}</h5>
+                    <p className="card-text text-muted small mb-3">{credit.description}</p>
 
-            <div style={{ fontSize: '0.95rem', color: '#444' }}>
-                <div><strong>Tasa de interés:</strong> {credit.interestRate}% mensual</div>
-                <div><strong>Monto:</strong> {formatCurrency(credit.minAmount)} – {formatCurrency(credit.maxAmount)}</div>
-                <div><strong>Plazo máximo:</strong> {credit.maxTerm} meses</div>
+                    <div className="mt-auto">
+                        <p className="mb-1"><strong>Tasa:</strong> {credit.interestRate}% mensual</p>
+                        <p className="mb-1"><strong>Monto:</strong> {formatCurrency(credit.minAmount)} – {formatCurrency(credit.maxAmount)}</p>
+                        <p className="mb-3"><strong>Plazo:</strong> {credit.maxTerm} meses</p>
+
+                        <Link
+                            to={`/solicitud?credit=${encodeURIComponent(credit.name)}`}
+                            className="btn btn-dark w-100 fw-semibold"
+                        >
+                            Solicitar
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
     );
