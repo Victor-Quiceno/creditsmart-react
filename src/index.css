@@ -85,3 +85,7 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.card-soft {
+  background-color: #d1d1d1 !important;
+}

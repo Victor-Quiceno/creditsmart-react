@@ -17,6 +17,7 @@ export default function CreditCard({ credit }) {
                 style={{
                     borderRadius: '12px',
                     transition: 'transform 0.2s, box-shadow 0.2s',
+                    backgroundColor: '#e1e1e1ff',
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
                 onMouseLeave={(e) => e.currentTarget.style.transform = 'none'}

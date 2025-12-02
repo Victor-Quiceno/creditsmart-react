@@ -16,12 +16,17 @@ import ApplicationPage from './pages/ApplicationPage';
 function App() {
   return (
     <div className="d-flex flex-column min-vh-100">
-      {/* Navbar oscuro */}
+      {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid">
-          {/* Logo a la izquierda */}
-          <Link className="navbar-brand fs-4 fw-bold text-white" to="/">
-            CreditSmart
+          {/* Logo */}
+          <Link className="navbar-brand d-flex align-items-center" to="/">
+            <img
+              src="/images/logo.png"
+              alt="Logo CreditSmart"
+              style={{ height: '32px', marginRight: '12px' }}
+            />
+            <span className="fs-4 fw-bold text-white">CreditSmart</span>
           </Link>
 
           {/* Botón hamburguesa solo visible en móviles */}

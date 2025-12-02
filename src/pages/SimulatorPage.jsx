@@ -79,10 +79,10 @@ export default function SimulatorPage() {
 
             {/* Panel de controles de filtrado */}
             <div style={{
-                backgroundColor: '#f8fafc',           // Fondo gris muy claro (profesional)
+                backgroundColor: '#e4e4e4ff', // Fondo gris muy claro (profesional)
                 padding: '24px',
                 borderRadius: '12px',
-                border: '1px solid #e2e8f0',         // Borde sutil
+                border: '1px solid #e2e8f0', // Borde sutil
                 marginBottom: '32px'
             }}>
                 {/* Búsqueda por nombre */}
@@ -166,7 +166,7 @@ export default function SimulatorPage() {
                                 border: '1px solid #cbd5e1',
                                 borderRadius: '6px',
                                 backgroundColor: 'white',
-                                color: '#334155' // ✅ Ahora el texto se ve
+                                color: '#334155'
                             }}
                         >
                             <option value="all">Todas las tasas</option>

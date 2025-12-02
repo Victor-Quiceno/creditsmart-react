@@ -142,9 +142,20 @@ export default function ApplicationPage() {
             ) : (
                 <form onSubmit={handleSubmit}>
                     {/* Datos personales */}
-                    <div className="card shadow-sm mb-4">
-                        <div className="card-header bg-white border-bottom">
-                            <h2 className="fs-5 fw-bold mb-0">Datos personales</h2>
+                    <div className="card shadow-sm mb-4 card-soft">
+
+                        <div
+                            className="card-header"
+                            style={{
+                                backgroundColor: '#111827',
+                                color: 'white',
+                                padding: '12px 16px',
+                                marginBottom: '0'
+                            }}
+                        >
+                            <h2 className="fs-5 fw-bold mb-0" style={{ color: 'white' }}>
+                                Datos personales
+                            </h2>
                         </div>
                         <div className="card-body">
                             <div className="mb-3">
@@ -184,7 +195,7 @@ export default function ApplicationPage() {
                                     />
                                 </div>
                             </div>
-                            <div className="mb-3">
+                            <div className="mb-3 mt-3">
                                 <input
                                     type="email"
                                     name="email"
@@ -210,9 +221,19 @@ export default function ApplicationPage() {
                     </div>
 
                     {/* Datos laborales */}
-                    <div className="card shadow-sm mb-4">
-                        <div className="card-header bg-white border-bottom">
-                            <h2 className="fs-5 fw-bold mb-0">Datos laborales</h2>
+                    <div className="card shadow-sm mb-4 card-soft">
+                        <div
+                            className="card-header"
+                            style={{
+                                backgroundColor: '#111827',
+                                color: 'white',
+                                padding: '12px 16px',
+                                marginBottom: '0'
+                            }}
+                        >
+                            <h2 className="fs-5 fw-bold mb-0" style={{ color: 'white' }}>
+                                Datos laborales
+                            </h2>
                         </div>
                         <div className="card-body">
                             <div className="row g-3">
@@ -239,7 +260,7 @@ export default function ApplicationPage() {
                                     />
                                 </div>
                             </div>
-                            <div className="mb-3">
+                            <div className="mb-3 mt-3">
                                 <input
                                     type="number"
                                     name="monthlyIncome"
@@ -254,9 +275,19 @@ export default function ApplicationPage() {
                     </div>
 
                     {/* Detalles del crédito */}
-                    <div className="card shadow-sm mb-4">
-                        <div className="card-header bg-white border-bottom">
-                            <h2 className="fs-5 fw-bold mb-0">Detalles del crédito</h2>
+                    <div className="card shadow-sm mb-4 card-soft">
+                        <div
+                            className="card-header"
+                            style={{
+                                backgroundColor: '#111827',
+                                color: 'white',
+                                padding: '12px 16px',
+                                marginBottom: '0'
+                            }}
+                        >
+                            <h2 className="fs-5 fw-bold mb-0" style={{ color: 'white' }}>
+                                Detalles del crédito
+                            </h2>
                         </div>
                         <div className="card-body">
                             <div className="mb-3">
