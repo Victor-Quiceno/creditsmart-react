@@ -1,17 +1,17 @@
 import { credits } from '../data/credits';
 import CreditCard from '../components/CreditCard';
 import { Link } from 'react-router-dom';
+import Carousel from '../components/Carousel'; // importamos el carrusel
 
 export default function HomePage() {
-    // Créditos destacados - los primeros 4
     const destacados = credits.slice(0, 4);
 
     return (
         <div>
-            {/* Banner principal */}
+            {/* Hero: mensaje de bienvenida */}
             <div style={{
                 backgroundColor: 'white',
-                padding: '60px 20px',
+                padding: '40px 20px',
                 textAlign: 'center',
                 borderBottom: '1px solid #e2e8f0'
             }}>
@@ -32,6 +32,11 @@ export default function HomePage() {
                 }}>
                     Comparación transparente, tasas competitivas y trámites 100% en línea con CreditSmart.
                 </p>
+            </div>
+
+            {/* Carrusel */}
+            <div style={{ padding: '20px', backgroundColor: 'white' }}>
+                <Carousel />
             </div>
 
             {/* Sección de créditos destacados */}
@@ -57,7 +62,6 @@ export default function HomePage() {
                     ))}
                 </div>
 
-                {/* Botón "Todos los créditos" */}
                 <div style={{ textAlign: 'center' }}>
                     <Link
                         to="/simulador"
