@@ -1,3 +1,13 @@
+/**
+ * Componente principal de la aplicación CreditSmart.
+ * 
+ * Responsabilidades:
+ * - Define la estructura global: navbar, contenido principal y footer.
+ * - Gestiona el enrutamiento entre páginas.
+ * - Aplica estilos globales: fondo blanco en contenido, navbar y footer oscuros.
+ * - Incluye menú hamburguesa solo en dispositivos móviles (con Bootstrap).
+ * - Totalmente responsive (mobile-first).
+ */
 import { Link, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import SimulatorPage from './pages/SimulatorPage';
@@ -6,16 +16,40 @@ import ApplicationPage from './pages/ApplicationPage';
 function App() {
   return (
     <div className="d-flex flex-column min-vh-100">
-      {/* Navbar */}
-      <nav className="navbar navbar-dark bg-dark">
-        <div className="container-fluid d-flex justify-content-between align-items-center">
+      {/* Navbar oscuro */}
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div className="container-fluid">
+          {/* Logo a la izquierda */}
           <Link className="navbar-brand fs-4 fw-bold text-white" to="/">
             CreditSmart
           </Link>
-          <div className="d-none d-md-flex gap-3">
-            <Link className="nav-link text-light" to="/">Inicio</Link>
-            <Link className="nav-link text-light" to="/simulador">Simular Crédito</Link>
-            <Link className="nav-link text-light" to="/solicitud">Solicitar Crédito</Link>
+
+          {/* Botón hamburguesa solo visible en móviles */}
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+
+          {/* Contenedor de enlaces - colapsable en móviles */}
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav ms-auto">
+              <li className="nav-item">
+                <Link className="nav-link text-light" to="/">Inicio</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link text-light" to="/simulador">Simular Crédito</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link text-light" to="/solicitud">Solicitar Crédito</Link>
+              </li>
+            </ul>
           </div>
         </div>
       </nav>
@@ -29,7 +63,7 @@ function App() {
         </Routes>
       </main>
 
-      {/* Footer  */}
+      {/* Footer */}
       <footer className="bg-dark text-light py-4 mt-auto">
         <div className="container text-center">
           <p className="mb-0">© 2025 CreditSmart. Todos los derechos reservados.</p>

@@ -30,11 +30,13 @@ body {
   padding: 0;
 }
 
-/* Hover para enlaces del navbar */
-.nav-link:hover {
-  color: #60a5fa !important;
-  /* Azul celeste */
+/* Hover azul en navbar */
+.navbar .nav-link {
   transition: color 0.2s ease;
+}
+
+.navbar .nav-link:hover {
+  color: #60a5fa !important;
 }
 
 /* Asegurar que el footer no se pegue */

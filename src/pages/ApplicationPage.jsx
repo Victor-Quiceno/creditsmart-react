@@ -1,3 +1,19 @@
+/**
+ * Página de solicitud de crédito.
+ * 
+ * Contiene un formulario dividido en 3 secciones:
+ * 1. Datos personales (nombre, tipo y número de documento, email, teléfono)
+ * 2. Datos laborales (empresa, cargo, ingresos)
+ * 3. Detalles del crédito (tipo, monto, plazo)
+ * 
+ * Características:
+ * - Validación en tiempo real
+ * - Cálculo automático de cuota mensual
+ * - Resumen antes de enviar
+ * - Mensaje de éxito con limpieza automática
+ * - Totalmente responsive (usa cards de Bootstrap)
+ */
+
 import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { credits } from '../data/credits';
