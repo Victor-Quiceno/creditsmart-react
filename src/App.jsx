@@ -4,9 +4,9 @@
  * Responsabilidades:
  * - Define la estructura global: navbar, contenido principal y footer.
  * - Gestiona el enrutamiento entre páginas.
- * - Aplica estilos globales: fondo blanco en contenido, navbar y footer oscuros.
+ * - Aplica estilos globales
  * - Incluye menú hamburguesa solo en dispositivos móviles (con Bootstrap).
- * - Totalmente responsive (mobile-first).
+ * - Totalmente responsive
  */
 import { Link, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
@@ -19,7 +19,9 @@ function App() {
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid">
+
           {/* Logo */}
+          {/* navbar-brand sirve para identificar el logo de la aplicación y proporcionar un enlace a la página de inicio. */}
           <Link className="navbar-brand d-flex align-items-center" to="/">
             <img
               src="/images/logo.png"

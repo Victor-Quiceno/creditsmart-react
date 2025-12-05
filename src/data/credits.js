@@ -1,5 +1,3 @@
-// src/data/credits.js
-
 export const credits = [
     {
         id: 1,

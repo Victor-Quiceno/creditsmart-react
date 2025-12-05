@@ -1,4 +1,3 @@
-// src/pages/SimulatorPage.jsx
 import { useState, useMemo } from 'react';
 import { credits } from '../data/credits';
 import CreditCard from '../components/CreditCard';
@@ -15,28 +14,20 @@ const GLOBAL_MAX = 300000000;   // Monto más alto entre todos los créditos
  * - Filtro por rango de monto (mínimo y máximo)
  * - Filtro por categoría de tasa de interés (baja, media, alta)
  * - Lista dinámica de resultados
- * - Mensaje amable cuando no hay coincidencias
- * 
- * Notas de diseño:
- * - Fondo blanco (requisito del profesor)
- * - Estilo sobrio y profesional, tipo plataforma bancaria
- * - Inputs numéricos en lugar de sliders (por simplicidad y accesibilidad)
- * - Evita mostrar "0" cuando el usuario borra un campo
- * - Filtro de tasa con <select> para facilidad de uso
  */
 export default function SimulatorPage() {
     // Estado para el término de búsqueda (texto libre)
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Estados para los inputs de monto (guardamos como CADENA para permitir campos vacíos)
-    const [minInput, setMinInput] = useState(''); // cadena vacía = sin filtro
-    const [maxInput, setMaxInput] = useState(''); // cadena vacía = sin filtro
+    // Estados para los inputs de monto (guardados como CADENA para permitir campos vacíos)
+    const [minInput, setMinInput] = useState('');
+    const [maxInput, setMaxInput] = useState('');
 
     // Estado para el filtro de tasa: valor inicial = "all" (todas)
     const [interestFilter, setInterestFilter] = useState('all');
 
-    // Convertimos a número solo en el momento del filtrado
-    // Si el input está vacío, usamos los límites globales (es decir: "no filtrar por ese extremo")
+    // Se convierte a número solo en el momento del filtrado
+    // Si el input está vacío, se usan los límites globales (es decir: "no filtrar por ese extremo")
     const minFilter = minInput === '' ? GLOBAL_MIN : Number(minInput);
     const maxFilter = maxInput === '' ? GLOBAL_MAX : Number(maxInput);
 
@@ -53,7 +44,7 @@ export default function SimulatorPage() {
             // Un crédito es válido si:
             // - Su monto máximo es >= al mínimo seleccionado
             // - Su monto mínimo es <= al máximo seleccionado
-            const matchesAmount = credit.maxAmount >= minFilter && credit.minAmount <= maxFilter;
+            const matchesAmount = credit.maxAmount >= min+Filter && credit.minAmount <= maxFilter;
 
             // 3. Coincidencia con categoría de tasa
             let matchesInterest = true; // por defecto, no filtra
@@ -79,10 +70,10 @@ export default function SimulatorPage() {
 
             {/* Panel de controles de filtrado */}
             <div style={{
-                backgroundColor: '#e4e4e4ff', // Fondo gris muy claro (profesional)
+                backgroundColor: '#e4e4e4ff',
                 padding: '24px',
                 borderRadius: '12px',
-                border: '1px solid #e2e8f0', // Borde sutil
+                border: '1px solid #e2e8f0',
                 marginBottom: '32px'
             }}>
                 {/* Búsqueda por nombre */}
@@ -105,8 +96,9 @@ export default function SimulatorPage() {
                     />
                 </div>
 
-                {/* Filtros de monto y tasa en una fila */}
+                {/* Filtros de monto y tasa */}
                 <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'end' }}>
+
                     {/* Monto mínimo */}
                     <div style={{ flex: 1, minWidth: '150px' }}>
                         <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', color: '#334155' }}>
