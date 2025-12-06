@@ -44,7 +44,7 @@ export default function SimulatorPage() {
             // Un crédito es válido si:
             // - Su monto máximo es >= al mínimo seleccionado
             // - Su monto mínimo es <= al máximo seleccionado
-            const matchesAmount = credit.maxAmount >= min+Filter && credit.minAmount <= maxFilter;
+            const matchesAmount = credit.maxAmount >= minFilter && credit.minAmount <= maxFilter;
 
             // 3. Coincidencia con categoría de tasa
             let matchesInterest = true; // por defecto, no filtra
