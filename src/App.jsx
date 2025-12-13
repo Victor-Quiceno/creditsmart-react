@@ -10,8 +10,11 @@
  */
 import { Link, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
-import SimulatorPage from './pages/SimulatorPage';
 import ApplicationPage from './pages/ApplicationPage';
+import SolicitudesPage from './pages/solicitudesPage';
+import EditSolicitudPage from './pages/EditSolicitudPage';
+import SimuladorPage from './pages/SimuladorPage';
+
 
 function App() {
   return (
@@ -56,6 +59,9 @@ function App() {
               <li className="nav-item">
                 <Link className="nav-link text-light" to="/solicitud">Solicitar Crédito</Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link text-light" to="/solicitudes">Lista de Solicitudes</Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -65,8 +71,11 @@ function App() {
       <main className="flex-grow-1 py-4 bg-white">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/simulador" element={<SimulatorPage />} />
+          <Route path="/simulador" element={<SimuladorPage />} />
           <Route path="/solicitud" element={<ApplicationPage />} />
+          <Route path="/solicitudes" element={<SolicitudesPage />} />
+          <Route path="/solicitudes/editar/:id" element={<EditSolicitudPage />} />
+
         </Routes>
       </main>
 

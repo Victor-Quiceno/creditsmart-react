@@ -1,9 +1,32 @@
-import { credits } from '../data/credits';
+import { useState, useEffect } from 'react';
 import CreditCard from '../components/CreditCard';
 import { Link } from 'react-router-dom';
-import Carousel from '../components/Carousel'; // importamos el carrusel
+import Carousel from '../components/Carousel';
+import { fetchCredits } from '../firebase/services';
 
 export default function HomePage() {
+    // Estado para los créditos, loading y errores
+    const [credits, setCredits] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Cargar créditos desde Firestore al montar el componente
+    useEffect(() => {
+        const loadCredits = async () => {
+            try {
+                const creditsData = await fetchCredits();
+                setCredits(creditsData);
+            } catch (err) {
+                console.error("Error al cargar créditos en HomePage:", err);
+                setError("No se pudieron cargar los créditos destacados. Verifica tu conexión.");
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadCredits();
+    }, []);
+
+    // Obtener los primeros 4 créditos como destacados
     const destacados = credits.slice(0, 4);
 
     return (
@@ -43,13 +66,30 @@ export default function HomePage() {
             <div className="container mt-4">
                 <h2 className="text-center mb-4 fw-bold text-dark">Productos Destacados</h2>
 
-                <div className="row g-4 justify-content-center">
-                    {destacados.map(credit => (
-                        <CreditCard key={credit.id} credit={credit} />
-                    ))}
-                </div>
+                {/* Estado de carga */}
+                {loading && (
+                    <div className="text-center">
+                        <p>Cargando créditos destacados...</p>
+                    </div>
+                )}
 
-                <div className="text-center mt-5">
+                {/* Mensaje de error */}
+                {error && (
+                    <div className="alert alert-warning text-center">
+                        {error}
+                    </div>
+                )}
+
+                {/* Tarjetas de créditos destacados */}
+                {!loading && !error && (
+                    <div className="row g-4 justify-content-center">
+                        {destacados.map(credit => (
+                            <CreditCard key={credit.id} credit={credit} />
+                        ))}
+                    </div>
+                )}
+
+                <div className="text complete mt-5">
                     <Link
                         to="/simulador"
                         className="btn btn-outline-dark px-4 py-2 fw-semibold"

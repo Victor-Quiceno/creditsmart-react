@@ -1,76 +1,86 @@
-import { useState, useMemo } from 'react';
-import { credits } from '../data/credits';
+import { useState, useEffect } from 'react';
 import CreditCard from '../components/CreditCard';
+import { fetchCredits } from '../firebase/services';
 
-// Valores globales para definir el rango total posible de montos
-// Estos límites vienen del conjunto completo de créditos disponibles
-const GLOBAL_MIN = 500000;      // Monto más bajo entre todos los créditos
-const GLOBAL_MAX = 300000000;   // Monto más alto entre todos los créditos
+// Límites globales para filtros de monto
+const GLOBAL_MIN = 500000;
+const GLOBAL_MAX = 300000000;
 
 /**
- * Página del Simulador de Créditos
+ * Página de búsqueda y filtrado de créditos
+ * 
  * Funcionalidades:
- * - Búsqueda en tiempo real por nombre del crédito
+ * - Búsqueda por nombre en tiempo real
  * - Filtro por rango de monto (mínimo y máximo)
- * - Filtro por categoría de tasa de interés (baja, media, alta)
- * - Lista dinámica de resultados
+ * - Filtro por tasa de interés (baja, media, alta)
+ * - Carga de datos desde Firestore
+ * - Diseño bancario y responsive
  */
-export default function SimulatorPage() {
-    // Estado para el término de búsqueda (texto libre)
-    const [searchTerm, setSearchTerm] = useState('');
+export default function SimuladorPage() {
+    // Estado para créditos y carga
+    const [credits, setCredits] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Estados para los inputs de monto (guardados como CADENA para permitir campos vacíos)
+    // Filtros
+    const [searchTerm, setSearchTerm] = useState('');
     const [minInput, setMinInput] = useState('');
     const [maxInput, setMaxInput] = useState('');
-
-    // Estado para el filtro de tasa: valor inicial = "all" (todas)
     const [interestFilter, setInterestFilter] = useState('all');
 
-    // Se convierte a número solo en el momento del filtrado
-    // Si el input está vacío, se usan los límites globales (es decir: "no filtrar por ese extremo")
+    // Convertir inputs a números para filtros
     const minFilter = minInput === '' ? GLOBAL_MIN : Number(minInput);
     const maxFilter = maxInput === '' ? GLOBAL_MAX : Number(maxInput);
 
-    /**
-     * useMemo: evita recalcular la lista filtrada en cada render innecesario.
-     * Solo se recalcula si cambia searchTerm, minFilter, maxFilter o interestFilter.
-     */
-    const filteredCredits = useMemo(() => {
-        return credits.filter(credit => {
-            // 1. Coincidencia con búsqueda (insensible a mayúsculas)
-            const matchesSearch = credit.name.toLowerCase().includes(searchTerm.toLowerCase());
-
-            // 2. Coincidencia con rango de monto:
-            // Un crédito es válido si:
-            // - Su monto máximo es >= al mínimo seleccionado
-            // - Su monto mínimo es <= al máximo seleccionado
-            const matchesAmount = credit.maxAmount >= minFilter && credit.minAmount <= maxFilter;
-
-            // 3. Coincidencia con categoría de tasa
-            let matchesInterest = true; // por defecto, no filtra
-            if (interestFilter === 'low') {
-                matchesInterest = credit.interestRate <= 1.0;
-            } else if (interestFilter === 'medium') {
-                matchesInterest = credit.interestRate > 1.0 && credit.interestRate <= 1.3;
-            } else if (interestFilter === 'high') {
-                matchesInterest = credit.interestRate > 1.3;
+    // Cargar créditos al montar
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const data = await fetchCredits();
+                setCredits(Array.isArray(data) ? data : []);
+            } catch (err) {
+                setError("Error al cargar créditos. Verifica tu conexión.");
+                console.error(err);
+            } finally {
+                setLoading(false);
             }
-            // Si interestFilter === 'all', matchesInterest sigue siendo true
+        };
+        load();
+    }, []);
 
-            // Solo se incluye si cumple LAS TRES condiciones
-            return matchesSearch && matchesAmount && matchesInterest;
-        });
-    }, [searchTerm, minFilter, maxFilter, interestFilter]);
+    // Filtrar créditos
+    const filteredCredits = credits.filter(credit => {
+        // Búsqueda por nombre
+        const matchesSearch = credit.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+        // Filtro por rango de monto
+        const matchesAmount = credit.maxAmount >= minFilter && credit.minAmount <= maxFilter;
+
+        // Filtro por tasa
+        let matchesInterest = true;
+        if (interestFilter === 'low') {
+            matchesInterest = credit.interestRate <= 1.0;
+        } else if (interestFilter === 'medium') {
+            matchesInterest = credit.interestRate > 1.0 && credit.interestRate <= 1.3;
+        } else if (interestFilter === 'high') {
+            matchesInterest = credit.interestRate > 1.3;
+        }
+
+        return matchesSearch && matchesAmount && matchesInterest;
+    });
+
+    if (loading) return <div className="text-center mt-4">Cargando créditos...</div>;
+    if (error) return <div className="alert alert-danger text-center">{error}</div>;
 
     return (
         <div style={{ padding: '24px', maxWidth: '1000px', margin: '0 auto' }}>
             <h1 style={{ textAlign: 'center', marginBottom: '24px', color: '#1e293b' }}>
-                Simulador de Créditos
+                Buscador de Créditos
             </h1>
 
-            {/* Panel de controles de filtrado */}
+            {/* Panel de filtros */}
             <div style={{
-                backgroundColor: '#e4e4e4ff',
+                backgroundColor: '#f8fafc',
                 padding: '24px',
                 borderRadius: '12px',
                 border: '1px solid #e2e8f0',
@@ -98,7 +108,6 @@ export default function SimulatorPage() {
 
                 {/* Filtros de monto y tasa */}
                 <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'end' }}>
-
                     {/* Monto mínimo */}
                     <div style={{ flex: 1, minWidth: '150px' }}>
                         <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', color: '#334155' }}>
@@ -143,7 +152,7 @@ export default function SimulatorPage() {
                         />
                     </div>
 
-                    {/* Filtro por tasa de interés */}
+                    {/* Filtro por tasa */}
                     <div style={{ flex: 1, minWidth: '180px' }}>
                         <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', color: '#334155' }}>
                             Tasa de interés
@@ -162,13 +171,14 @@ export default function SimulatorPage() {
                             }}
                         >
                             <option value="all">Todas las tasas</option>
-                            <option value="low">Bajas (≤ 1.0% mensual)</option>
+                            <option value="low">Bajas (≤ 1.0%)</option>
                             <option value="medium">Medias (1.0% – 1.3%)</option>
                             <option value="high">Altas ({'>'} 1.3%)</option>
                         </select>
                     </div>
                 </div>
             </div>
+
             {/* Resultados */}
             {filteredCredits.length === 0 ? (
                 <p className="text-center text-muted mt-4">No hay créditos disponibles con esos criterios.</p>

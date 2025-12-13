@@ -12,50 +12,53 @@
  * - Resumen antes de enviar
  * - Mensaje de éxito con limpieza automática
  * - Totalmente responsive usa cards de Bootstrap
+ * - Integración completa con Firebase (carga de créditos y guardado de solicitudes)
  */
 
-
-// Al importar useState y useMemo de React para manejar estados y memorizar cálculos
-// useSearchParams de react-router-dom para leer parámetros de la URL
-// credits desde data/credits para listar los tipos de crédito disponibles
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { credits } from '../data/credits';
+import { fetchCredits, createSolicitud } from '../firebase/services';
 
 export default function ApplicationPage() {
     const [searchParams] = useSearchParams();
     const creditFromUrl = searchParams.get('credit');
 
-    // Estado del formulario para manejar los datos ingresados por el usuario
-    // setFormData se usa para actualizar el estado del formulario
-    // formData contiene todos los campos del formulario
+    // Estado del formulario
     const [formData, setFormData] = useState({
         fullName: '',
         documentType: 'CC',
         idNumber: '',
         email: '',
         phone: '',
-
         company: '',
         jobTitle: '',
         monthlyIncome: '',
-
         creditType: creditFromUrl || '',
         amount: '',
         term: ''
     });
 
-    // Estado para almacenar las solicitudes enviadas
-    const [solicitudes, setSolicitudes] = useState([]);
-
-    // Estado para mostrar el resumen antes de enviar, controlado por handleSubmit, más abajo
     const [showSummary, setShowSummary] = useState(false);
-
-    // Estado para mostrar el mensaje de éxito, controlado por handleConfirm, más abajo
     const [success, setSuccess] = useState(false);
+    const [credits, setCredits] = useState([]);
+    const [loadingCredits, setLoadingCredits] = useState(true);
+
+    // Cargar créditos desde Firestore al montar el componente
+    useEffect(() => {
+        const loadCredits = async () => {
+            try {
+                const data = await fetchCredits();
+                setCredits(data);
+            } catch (error) {
+                console.error("Error al cargar créditos para el select:", error);
+            } finally {
+                setLoadingCredits(false);
+            }
+        };
+        loadCredits();
+    }, []);
 
     // Maneja los cambios en los campos del formulario
-    // Esto sirve para actualizar el estado del formulario en tiempo real
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -64,79 +67,65 @@ export default function ApplicationPage() {
         });
     };
 
-    // Estima la cuota mensual basada en el monto, plazo e interés fijo del 1.2%
+    // Calcula la cuota mensual
     const calculateMonthlyPayment = () => {
         const amount = parseFloat(formData.amount);
         const term = parseInt(formData.term);
         const interestRate = 1.2;
 
-        // Si no hay monto o plazo válido, retorna 0
         if (!amount || !term || term <= 0) return 0;
 
-        // convierte el interés de porcentaje a decimal
         const i = interestRate / 100;
-
-        // Fórmula de cuota mensual
         const numerator = amount * i * Math.pow(1 + i, term);
         const denominator = Math.pow(1 + i, term) - 1;
         const payment = numerator / denominator;
 
-        //isNan(payment) sirve para evitar que se muestre "NaN" (Not a Number) en caso de error
         return isNaN(payment) ? 0 : payment;
     };
 
-    // Calcula la cuota mensual cada vez que cambian monto o plazo
     const monthlyPayment = calculateMonthlyPayment();
 
-    // Maneja el envío del formulario, muestra el resumen previniendo el envío real en caso de tener que modificar datos
+    // Maneja el envío del formulario (muestra resumen)
     const handleSubmit = (e) => {
         e.preventDefault();
         setShowSummary(true);
     };
 
-    // Maneja la confirmación del resumen, guarda la solicitud y muestra el mensaje de éxito
-    const handleConfirm = () => {
-
+    // Guarda la solicitud en Firestore
+    const handleConfirm = async () => {
         const nuevaSolicitud = {
-            id: Date.now(),
             ...formData,
-            monthlyPayment,
+            monthlyPayment: monthlyPayment,
             fecha: new Date().toLocaleString()
         };
 
-        // Agrega la nueva solicitud al estado de solicitudes
-        setSolicitudes(prev => [...prev, nuevaSolicitud]);
+        try {
+            await createSolicitud(nuevaSolicitud);
+            setSuccess(true);
 
-        // Se muestra en consola las solicitudes
-        console.log('Solicitudes', [...solicitudes, nuevaSolicitud]);
-
-        // Cambia el estado para mostrar el mensaje de éxito
-        setSuccess(true);
-
-        console.log('Solicitud enviada:', { ...formData, monthlyPayment });
-        setTimeout(() => {
-
-            // Limpia el formulario después de 2 segundos
-            setFormData({
-                fullName: '',
-                documentType: 'CC',
-                idNumber: '',
-                email: '',
-                phone: '',
-                company: '',
-                jobTitle: '',
-                monthlyIncome: '',
-                creditType: '',
-                amount: '',
-                term: ''
-            });
-             // Oculta el resumen y el mensaje de éxito
-            setShowSummary(false);
-            setSuccess(false);
-        }, 2000);
+            setTimeout(() => {
+                setFormData({
+                    fullName: '',
+                    documentType: 'CC',
+                    idNumber: '',
+                    email: '',
+                    phone: '',
+                    company: '',
+                    jobTitle: '',
+                    monthlyIncome: '',
+                    creditType: '',
+                    amount: '',
+                    term: ''
+                });
+                setShowSummary(false);
+                setSuccess(false);
+            }, 2000);
+        } catch (error) {
+            alert(error.message);
+        }
     };
 
-    // Esto muestra el mensaje de éxito si la solicitud fue enviada
+    // Mensaje de éxito
     if (success) {
         return (
             <div className="container mt-5">
@@ -148,13 +137,12 @@ export default function ApplicationPage() {
         );
     }
 
-    // Renderiza el formulario o el resumen basado en el estado showSummary
     return (
         <div className="container mt-4">
             <h1 className="text-center mb-4 fw-bold">Solicitud de Crédito</h1>
 
-            {/* Esto es lo que se muestra si showSummary es true (el resumen) */}
             {showSummary ? (
+                // RESUMEN
                 <div className="card shadow-sm p-4">
                     <h2 className="fw-bold mb-4">Resumen de tu solicitud</h2>
                     <p><strong>Nombre:</strong> {formData.fullName}</p>
@@ -170,18 +158,13 @@ export default function ApplicationPage() {
                     <p><strong>Plazo:</strong> {formData.term} meses</p>
                     <p><strong>Cuota estimada:</strong> ${monthlyPayment.toLocaleString('es-CO', { maximumFractionDigits: 0 })}</p>
 
-                    {/* Estos son los botones para confirmar o editar la solicitud */}
                     <div className="d-flex justify-content-center gap-3 mt-4">
-
-                        {/* En caso de darle a confirmar y enviar, se ejecuta handleConfirm */}
                         <button
                             onClick={handleConfirm}
                             className="btn btn-dark px-4"
                         >
                             Confirmar y enviar
                         </button>
-
-                        {/* En caso de darle a editar, se vuelve al formulario cambiando el estado de ShowSummary (El resumen) a falso */}
                         <button
                             onClick={() => setShowSummary(false)}
                             className="btn btn-outline-secondary px-4"
@@ -191,24 +174,12 @@ export default function ApplicationPage() {
                     </div>
                 </div>
             ) : (
-
-                // Esto es lo que se muestra si showSummary es false (el formulario)
+                // FORMULARIO
                 <form onSubmit={handleSubmit}>
                     {/* Datos personales */}
-                    <div className="card shadow-sm mb-4 card-soft">
-
-                        <div
-                            className="card-header"
-                            style={{
-                                backgroundColor: '#111827',
-                                color: 'white',
-                                padding: '12px 16px',
-                                marginBottom: '0'
-                            }}
-                        >
-                            <h2 className="fs-5 fw-bold mb-0" style={{ color: 'white' }}>
-                                Datos personales
-                            </h2>
+                    <div className="card shadow-sm mb-4">
+                        <div className="card-header bg-dark text-white">
+                            <h2 className="fs-5 mb-0">Datos personales</h2>
                         </div>
                         <div className="card-body">
                             <div className="mb-3">
@@ -274,19 +245,9 @@ export default function ApplicationPage() {
                     </div>
 
                     {/* Datos laborales */}
-                    <div className="card shadow-sm mb-4 card-soft">
-                        <div
-                            className="card-header"
-                            style={{
-                                backgroundColor: '#111827',
-                                color: 'white',
-                                padding: '12px 16px',
-                                marginBottom: '0'
-                            }}
-                        >
-                            <h2 className="fs-5 fw-bold mb-0" style={{ color: 'white' }}>
-                                Datos laborales
-                            </h2>
+                    <div className="card shadow-sm mb-4">
+                        <div className="card-header bg-dark text-white">
+                            <h2 className="fs-5 mb-0">Datos laborales</h2>
                         </div>
                         <div className="card-body">
                             <div className="row g-3">
@@ -328,37 +289,31 @@ export default function ApplicationPage() {
                     </div>
 
                     {/* Detalles del crédito */}
-                    <div className="card shadow-sm mb-4 card-soft">
-                        <div
-                            className="card-header"
-                            style={{
-                                backgroundColor: '#111827',
-                                color: 'white',
-                                padding: '12px 16px',
-                                marginBottom: '0'
-                            }}
-                        >
-                            <h2 className="fs-5 fw-bold mb-0" style={{ color: 'white' }}>
-                                Detalles del crédito
-                            </h2>
+                    <div className="card shadow-sm mb-4">
+                        <div className="card-header bg-dark text-white">
+                            <h2 className="fs-5 mb-0">Detalles del crédito</h2>
                         </div>
                         <div className="card-body">
                             <div className="mb-3">
-                                <select
-                                    name="creditType"
-                                    value={formData.creditType}
-                                    onChange={handleChange}
-                                    required
-                                    className="form-select"
-                                >
-                                    {/* Se usa .map en credits para mapear todos los nombres de los créditos y mostrarlos como option */}
-                                    <option value="">-- Selecciona un tipo de crédito --</option>
-                                    {credits.map(credit => (
-                                        <option key={credit.id} value={credit.name}>
-                                            {credit.name}
-                                        </option>
-                                    ))}
-                                </select>
+                                <label className="form-label">Tipo de crédito</label>
+                                {loadingCredits ? (
+                                    <div className="form-text">Cargando opciones...</div>
+                                ) : (
+                                    <select
+                                        name="creditType"
+                                        value={formData.creditType}
+                                        onChange={handleChange}
+                                        required
+                                        className="form-select"
+                                    >
+                                        <option value="">-- Selecciona un tipo de crédito --</option>
+                                        {credits.map(credit => (
+                                            <option key={credit.id} value={credit.name}>
+                                                {credit.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                )}
                             </div>
                             <div className="row g-3">
                                 <div className="col-md-6">
@@ -385,7 +340,6 @@ export default function ApplicationPage() {
                                 </div>
                             </div>
 
-                            {/* Muestra la cuota mensual estimada si monto y plazo están completos y se le pone formato de moneda Colombiana */}
                             {formData.amount && formData.term && (
                                 <div className="mt-3 p-3 bg-light rounded">
                                     <strong>Cuota mensual estimada:</strong> ${monthlyPayment.toLocaleString('es-CO', { maximumFractionDigits: 0 })}
@@ -399,7 +353,7 @@ export default function ApplicationPage() {
                             type="submit"
                             className="btn btn-dark fw-semibold"
                         >
-                            Enviar solicitud
+                            Revisar solicitud
                         </button>
                     </div>
                 </form>
