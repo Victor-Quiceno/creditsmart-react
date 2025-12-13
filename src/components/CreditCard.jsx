@@ -1,4 +1,3 @@
-// src/components/CreditCard.jsx
 import { Link } from 'react-router-dom';
 
 /**
