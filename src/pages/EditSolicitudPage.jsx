@@ -1,8 +1,27 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fetchSolicitudes, updateSolicitud } from '../firebase/services';
+import { fetchCredits } from '../firebase/services';
 
 export default function EditSolicitudPage() {
+
+    const [credits, setCredits] = useState([]);
+    const [loadingCredits, setLoadingCredits] = useState(true);
+
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const data = await fetchCredits();
+                setCredits(Array.isArray(data) ? data : []);
+            } catch (err) {
+                console.error("Error al cargar créditos:", err);
+            } finally {
+                setLoadingCredits(false);
+            }
+        };
+        load();
+    }, []);
+
     const { id } = useParams();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -198,20 +217,25 @@ export default function EditSolicitudPage() {
                     </div>
                     <div className="card-body">
                         <div className="mb-3">
-                            <select
-                                name="creditType"
-                                value={formData.creditType}
-                                onChange={handleChange}
-                                required
-                                className="form-select"
-                            >
-                                <option value="">-- Selecciona un tipo de crédito --</option>
-                                {credits.map(credit => (
-                                    <option key={credit.id} value={credit.name}>
-                                        {credit.name}
-                                    </option>
-                                ))}
-                            </select>
+                            <label className="form-label">Tipo de crédito</label>
+                            {loadingCredits ? (
+                                <div className="form-text">Cargando opciones...</div>
+                            ) : (
+                                <select
+                                    name="creditType"
+                                    value={formData.creditType}
+                                    onChange={handleChange}
+                                    required
+                                    className="form-select"
+                                >
+                                    <option value="">-- Selecciona un tipo de crédito --</option>
+                                    {credits.map(credit => (
+                                        <option key={credit.id} value={credit.name}>
+                                            {credit.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
                         </div>
                         <div className="row g-3">
                             <div className="col-md-6">

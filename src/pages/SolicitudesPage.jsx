@@ -71,7 +71,7 @@ export default function SolicitudesPage() {
                                                 </small>
                                             </p>
                                         </div>
-                                        <div className="d-flex gap-2">
+                                        <div className="d-flex gap-2 align-items-center">
                                             <Link
                                                 to={`/solicitudes/editar/${solicitud.id}`}
                                                 className="btn btn-sm btn-outline-primary"
